@@ -87,8 +87,8 @@ const promptMenu = () => {
             case 'Add an Intern':
                 promptIntern(); 
                 break; 
-            //case 'Finish building the team':
-                //finish input and write file
+            case 'Finish building the team':
+                writeToFile();
             }
     })
 }
@@ -218,38 +218,18 @@ const promptIntern = () => {
 }; 
 
 // Function to write HTML file
-// function writeToFile(fileName, data) {
-//     fs.writeFile(fileName, data, (err) => {
-//         if (err) {
-//             return console.log(err); 
-//         }
+function writeToFile(fileName, data) {
+    fs.writeFile(fileName, data, (err) => {
+        if (err) {
+            return console.log(err); 
+        }
     
-//     console.log('Success! You can now preview your HTML file!'); 
-    
-//     });
-// };
+    console.log('Success! You can now preview your HTML file!'); 
 
-// Function to initialize app
-// function init() {
-//     inquirer.prompt(manQuestions)
-//     .then(answers => {
-//         console.log(answers); 
-//     })
-//     inquirer.prompt(engQuestions)
-//     .then(answers => {
-//         console.log(answers); 
-//     }) 
-//     inquirer.prompt(intQuestions)
-//     .then(answers => {
-//         console.log(answers); 
-//     })
-// }
+    writeToFile('team.html', generateMarkdown(userInput)); 
     
-//     (function (userInput) {
-//         console.log(userInput)
-//         writeToFile('team.html', generateMarkdown(userInput)); 
-//     });
-// };
+    });
+};
 
 // Function call
 promptManager(); 
