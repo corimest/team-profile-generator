@@ -1,11 +1,11 @@
 // Packages needed for application
 const inquirer = require('inquirer');
 const fs = require('fs');
-//const generateSite = require('../src/generate-site.js'); 
 const teamMembers = []; 
 
 // constructors & classes needed
 const Manager = require('./lib/Manager');
+const generateSite = require('./src/generate-site');
 const Intern = require('./lib/Intern');  
 const Engineer = require('./lib/Engineer'); 
 
@@ -65,33 +65,14 @@ const promptManager = () => {
         }
     },
     ]).then(answers => {
+      // console.log left in so that user can see what they wrote 
+      console.log(answers); 
         const manager = new Manager(answers.managerName, answers.managerId, answers.managerEmail, answers.managerOfficeNum); 
         teamMembers.push(manager); 
         promptMenu(); 
     })
 }; 
 
-const promptMenu = () => {
-    return inquirer.prompt([
-        {
-            type: 'list', 
-            name: 'menu', 
-            message: 'What would you like to do next?', 
-            choices: ['Add an Engineer', 'Add an Intern', 'Finish building the team']
-        }
-    ]).then(userInput => {
-        switch (userInput.menu) {
-            case 'Add an Engineer': 
-                promptEngineer(); 
-                break; 
-            case 'Add an Intern':
-                promptIntern(); 
-                break; 
-            case 'Finish building the team':
-                writeToFile();
-            }
-    })
-}
 
 // Questions for Engineer
 const promptEngineer = () => {
@@ -149,6 +130,8 @@ const promptEngineer = () => {
         }
     }
     ]).then(answers => {
+      // console.log left in so that user can see what they wrote 
+        console.log(answers);
         const engineer = new Engineer(answers.engName, answers.engId, answers.engEmail, answers.engGitHub); 
         teamMembers.push(engineer); 
         promptMenu(); 
@@ -211,25 +194,48 @@ const promptIntern = () => {
         }
     }
 ]).then(answers => {
+  // console.log left in so that user can see what they wrote 
+    console.log(answers);
     const intern = new Intern(answers.intName, answers.intId, answers.intEmail, answers.intSchool); 
     teamMembers.push(intern); 
     promptMenu(); 
 })
 }; 
 
-// Function to write HTML file
+// Menu to add engineer, add intern, or complete your team 
+const promptMenu = () => {
+  return inquirer.prompt([
+      {
+          type: 'list', 
+          name: 'menu', 
+          message: 'What would you like to do next?', 
+          choices: ['Add an Engineer', 'Add an Intern', 'Finish building the team']
+      }
+  ]).then(userInput => {
+      switch (userInput.menu) {
+          case 'Add an Engineer': 
+              promptEngineer(); 
+              break; 
+          case 'Add an Intern':
+              promptIntern(); 
+              break; 
+          case 'Finish building the team':
+              writeToFile('team-page.html', generateSite(teamMembers)) 
+          }
+      })
+  }
+
+// Write HTML file function 
 function writeToFile(fileName, data) {
-    fs.writeFile(fileName, data, (err) => {
-        if (err) {
-            return console.log(err); 
-        }
-    
-    console.log('Success! You can now preview your HTML file!'); 
+  fs.writeFile(fileName, data, (err) => {
+      if (err) {
+          return console.log(err); 
+      }
 
-    writeToFile('team.html', generateMarkdown(userInput)); 
+      console.log('Your team has been created! You can view it now at team-page.html.')
     
-    });
-};
+  })
+}
 
-// Function call
-promptManager(); 
+// Start Call
+promptManager()
